@@ -11,6 +11,14 @@ using System.IO;
 
 namespace TxtToCSV {
     public partial class Form1 : Form {
+        //非同步作業
+        void DoWork(object sender, DoWorkEventArgs e) {
+
+            //呼叫自訂函式
+            List<String> files = (List<String>)e.Argument;
+            OpenAndConverToCSV(files);
+        }
+
         static void OpenAndConverToCSV(List<String> files) {
             foreach (string path in files) {
                 if (File.Exists(path) == true) {
@@ -66,7 +74,9 @@ namespace TxtToCSV {
                 foreach (String s in listBox1.Items) {
                     files.Add(s);
                 }
-                OpenAndConverToCSV(files);
+                BackgroundWorker backgroundWorker1 = new BackgroundWorker();
+                backgroundWorker1.DoWork += DoWork;
+                backgroundWorker1.RunWorkerAsync(files);
 
                 btnAddTxt.Enabled = true;
                 btnConvertToCsv.Enabled = true;
