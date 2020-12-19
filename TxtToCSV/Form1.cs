@@ -11,6 +11,31 @@ using System.IO;
 
 namespace TxtToCSV {
     public partial class Form1 : Form {
+        static void OpenAndConverToCSV(List<String> files) {
+            foreach (string path in files) {
+                if (File.Exists(path) == true) {
+                    // Open the file to read from.
+                    using (StreamReader sr = File.OpenText(path)) {
+                        if (File.Exists(path + ".csv") == true) {
+                            File.Delete(path + ".csv");
+                        }
+                        using (StreamWriter sw = File.CreateText(path + ".csv")) {
+
+                            string s;
+                            while ((s = sr.ReadLine()) != null) {
+                                string[] str = s.Split('\t');
+                                string newStr = null;
+                                foreach (String item in str) {
+                                    newStr += $"{item},";
+                                }
+                                Console.WriteLine(newStr);
+                                sw.WriteLine(newStr);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public Form1() {
             InitializeComponent();
         }
@@ -28,7 +53,6 @@ namespace TxtToCSV {
                     listBox1.Items.Add(openFileDialog1.FileName);
                 }
             }
-
         }
 
         private void btnConvertToCsv_Click(object sender, EventArgs e) {
@@ -37,29 +61,13 @@ namespace TxtToCSV {
             else {
                 btnAddTxt.Enabled = false;
                 btnConvertToCsv.Enabled = false;
-                foreach (string path in listBox1.Items) {
-                    if (File.Exists(path) == true) {
-                        // Open the file to read from.
-                        using (StreamReader sr = File.OpenText(path)) {
-                            if (File.Exists(path + ".csv") == true) {
-                                File.Delete(path + ".csv");
-                            }
-                            using (StreamWriter sw = File.CreateText(path + ".csv")) {
 
-                                string s;
-                                while ((s = sr.ReadLine()) != null) {
-                                    string[] str = s.Split('\t');
-                                    string newStr = null;
-                                    foreach (String item in str) {
-                                        newStr += $"{item},";
-                                    }
-                                    Console.WriteLine(newStr);
-                                    sw.WriteLine(newStr);
-                                }
-                            }
-                        }
-                    }
+                List<String> files = new List<String>();
+                foreach (String s in listBox1.Items) {
+                    files.Add(s);
                 }
+                OpenAndConverToCSV(files);
+
                 btnAddTxt.Enabled = true;
                 btnConvertToCsv.Enabled = true;
             }
