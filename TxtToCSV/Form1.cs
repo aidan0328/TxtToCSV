@@ -138,7 +138,7 @@ namespace TxtToCSV {
                 btnCancle.Visible = true;
                 progressBar1.Value = 0;
 
-                // 將檔案的完整路徑加入倒 files
+                // 將檔案的完整路徑加入到 files
                 List<String> files = new List<String>();
                 foreach (String s in listBox1.Items) {
                     files.Add(s);
